@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'Rubik';
+    src: url('font.ttf') format('truetype');
+}
+
 /* Базовые стили и сброс */
 * {
     margin: 0;
@@ -6,7 +11,7 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Rubik';
     background-color: #f5f5f5;
     color: #333;
     line-height: 1.6;
@@ -123,10 +128,58 @@ body {
     background-color: #f0f8ff;
 }
 
-/* Чекбокс выполнения */
-.task-checkbox {
+/* Стили для кастомного чекбокса */
+.task-checkbox-container {
+    position: relative;
     margin-right: 15px;
-    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.task-checkbox {
+    display: none; /* Скрываем стандартный чекбокс */
+}
+
+.custom-checkbox {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.custom-checkbox:hover {
+    border-color: #3498db;
+}
+
+/* Стиль для выполненной задачи */
+.task-item.completed .custom-checkbox {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.task-item.completed .checkmark {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Галочка */
+.checkmark {
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.3s ease;
+}
+
+/* Убираем стандартное выделение текста при клике */
+.task-checkbox-container, .custom-checkbox {
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 /* Контент задачи */

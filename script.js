@@ -1,4 +1,3 @@
-// To-Do List Application
 class TodoApp {
     constructor() {
         this.tasks = this.loadTasks();
@@ -15,28 +14,25 @@ class TodoApp {
         this.setupEventListeners();
     }
 
-    // Создание структуры приложения
     createAppStructure() {
         const app = document.getElementById('app');
 
-        // Заголовок
         const title = this.createElement('h1', { class: 'app-title' }, 'To-Do List');
         
-        // Форма добавления задачи
+        // форма добавления задачи
         const addForm = this.createAddForm();
         
-        // Панель управления
+        // панель управления
         const controlsPanel = this.createControlsPanel();
         
-        // Список задач
+        // список задач
         const tasksList = this.createElement('div', { class: 'tasks-list' });
         tasksList.id = 'tasksList';
 
-        // Собираем структуру
         app.append(title, addForm, controlsPanel, tasksList);
     }
 
-    // Создание формы добавления задачи
+    // форма добавления задачи
     createAddForm() {
         const form = this.createElement('form', { class: 'add-task-form' });
         
@@ -64,7 +60,6 @@ class TodoApp {
             class: 'add-button'
         }, 'Добавить задачу');
 
-        // Устанавливаем сегодняшнюю дату по умолчанию
         dateInput.valueAsDate = new Date();
 
         textGroup.append(textLabel, textInput);
@@ -74,11 +69,11 @@ class TodoApp {
         return form;
     }
 
-    // Создание панели управления
+    // панель управления
     createControlsPanel() {
         const panel = this.createElement('div', { class: 'controls-panel' });
 
-        // Поиск
+        // поиск
         const searchGroup = this.createElement('div', { class: 'control-group' });
         const searchItem = this.createElement('div', { class: 'control-item' });
         const searchInput = this.createElement('input', {
@@ -90,10 +85,9 @@ class TodoApp {
         searchItem.append(searchInput);
         searchGroup.append(searchItem);
 
-        // Фильтры и сортировка
         const filterGroup = this.createElement('div', { class: 'control-group' });
 
-        // Фильтр по статусу
+        // фильтр
         const filterItem = this.createElement('div', { class: 'control-item' });
         const filterSelect = this.createElement('select', { id: 'filterSelect', class: 'form-input' });
         const filterOptions = [
@@ -107,7 +101,7 @@ class TodoApp {
         });
         filterItem.append(filterSelect);
 
-        // Сортировка
+        // сортировка
         const sortItem = this.createElement('div', { class: 'control-item' });
         const sortSelect = this.createElement('select', { id: 'sortSelect', class: 'form-input' });
         const sortOptions = [
@@ -126,7 +120,7 @@ class TodoApp {
         return panel;
     }
 
-    // Создание элемента задачи
+    // элементы задачи
     createTaskElement(task) {
         const taskElement = this.createElement('div', {
             class: `task-item ${task.completed ? 'completed' : ''}`,
@@ -134,21 +128,28 @@ class TodoApp {
             draggable: true
         });
 
-        // Чекбокс выполнения
+        const checkboxContainer = this.createElement('label', {
+            class: 'task-checkbox-container'
+        });
+
         const checkbox = this.createElement('input', {
             type: 'checkbox',
             class: 'task-checkbox',
             checked: task.completed
         });
 
-        // Контент задачи
+        const customCheckbox = this.createElement('div', { class: 'custom-checkbox' });
+        const checkmark = this.createElement('span', { class: 'checkmark' }, '✓');
+        
+        customCheckbox.append(checkmark);
+        checkboxContainer.append(checkbox, customCheckbox);
+
         const content = this.createElement('div', { class: 'task-content' });
         const text = this.createElement('div', { class: 'task-text' }, task.text);
         const date = this.createElement('div', { class: 'task-date' }, this.formatDate(task.date));
 
         content.append(text, date);
 
-        // Кнопки управления
         const actions = this.createElement('div', { class: 'task-actions' });
         const editButton = this.createElement('button', {
             class: 'action-button edit-button',
@@ -160,12 +161,12 @@ class TodoApp {
         }, '🗑️');
 
         actions.append(editButton, deleteButton);
-        taskElement.append(checkbox, content, actions);
+        taskElement.append(checkboxContainer, content, actions);
 
         return taskElement;
     }
 
-    // Отображение списка задач
+    // отображение списка задач
     renderTasks() {
         const tasksList = document.getElementById('tasksList');
         tasksList.innerHTML = '';
@@ -189,7 +190,7 @@ class TodoApp {
         });
     }
 
-    // Фильтрация задач по статусу
+    // фильтрация задач
     filterTasks(tasks) {
         switch (this.currentFilter) {
             case 'active':
@@ -201,7 +202,7 @@ class TodoApp {
         }
     }
 
-    // Поиск задач
+    // поиск задач
     searchTasks(tasks) {
         if (!this.searchTerm) return tasks;
         
@@ -211,7 +212,7 @@ class TodoApp {
         );
     }
 
-    // Сортировка задач
+    // сортировка задач
     sortTasks(tasks) {
         return tasks.sort((a, b) => {
             if (this.currentSort === 'date') {
@@ -222,40 +223,43 @@ class TodoApp {
         });
     }
 
-    // Настройка обработчиков событий
+    // обработчики событий
     setupEventListeners() {
-        // Добавление задачи
+        // добавление задачи
         document.querySelector('.add-task-form').addEventListener('submit', (e) => {
             e.preventDefault();
             this.addTask();
         });
 
-        // Поиск
+        // поиск
         document.getElementById('searchInput').addEventListener('input', (e) => {
             this.searchTerm = e.target.value.trim();
             this.renderTasks();
         });
 
-        // Фильтрация
+        // фильтрация
         document.getElementById('filterSelect').addEventListener('change', (e) => {
             this.currentFilter = e.target.value;
             this.renderTasks();
         });
 
-        // Сортировка
+        // сортировка
         document.getElementById('sortSelect').addEventListener('change', (e) => {
             this.currentSort = e.target.value;
             this.renderTasks();
         });
 
-        // Делегирование событий для списка задач
+        // делегирование событий
         document.getElementById('tasksList').addEventListener('click', (e) => {
             const taskElement = e.target.closest('.task-item');
             if (!taskElement) return;
 
             const taskId = taskElement.dataset.taskId;
 
-            if (e.target.classList.contains('task-checkbox')) {
+            if (e.target.classList.contains('task-checkbox') || 
+                e.target.classList.contains('custom-checkbox') ||
+                e.target.classList.contains('task-checkbox-container') ||
+                e.target.classList.contains('checkmark')) {
                 this.toggleTaskCompletion(taskId);
             } else if (e.target.classList.contains('delete-button')) {
                 this.deleteTask(taskId);
@@ -264,11 +268,11 @@ class TodoApp {
             }
         });
 
-        // Drag and drop
+        // drag and drop
         this.setupDragAndDrop();
     }
 
-    // Настройка Drag and Drop
+    // drag and drop
     setupDragAndDrop() {
         const tasksList = document.getElementById('tasksList');
         
@@ -300,7 +304,7 @@ class TodoApp {
         });
     }
 
-    // Вспомогательная функция для Drag and Drop
+    // между какими элементами drag and drop
     getDragAfterElement(container, y) {
         const draggableElements = [...container.querySelectorAll('.task-item:not(.dragging)')];
 
@@ -316,7 +320,7 @@ class TodoApp {
         }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
 
-    // Обновление порядка задач после Drag and Drop
+    // обновление порядка задач после drag and drop
     updateTaskOrder() {
         const tasksList = document.getElementById('tasksList');
         const taskElements = tasksList.querySelectorAll('.task-item');
@@ -334,7 +338,7 @@ class TodoApp {
         this.saveTasks();
     }
 
-    // Добавление задачи
+    // добавление задачи
     addTask() {
         const textInput = document.getElementById('taskText');
         const dateInput = document.getElementById('taskDate');
@@ -352,14 +356,13 @@ class TodoApp {
             this.saveTasks();
             this.renderTasks();
             
-            // Сброс формы
             textInput.value = '';
             dateInput.valueAsDate = new Date();
             textInput.focus();
         }
     }
 
-    // Удаление задачи
+    // удаление задачи
     deleteTask(taskId) {
         if (confirm('Вы уверены, что хотите удалить эту задачу?')) {
             this.tasks = this.tasks.filter(task => task.id !== taskId);
@@ -368,7 +371,7 @@ class TodoApp {
         }
     }
 
-    // Переключение статуса выполнения
+    // статус выполнения
     toggleTaskCompletion(taskId) {
         const task = this.tasks.find(task => task.id === taskId);
         if (task) {
@@ -378,7 +381,7 @@ class TodoApp {
         }
     }
 
-    // Редактирование задачи
+    // редактирование задачи
     editTask(taskId) {
         const task = this.tasks.find(task => task.id === taskId);
         if (!task) return;
@@ -388,7 +391,6 @@ class TodoApp {
         const textElement = contentElement.querySelector('.task-text');
         const dateElement = contentElement.querySelector('.task-date');
 
-        // Создаем поля для редактирования
         const editTextInput = this.createElement('input', {
             type: 'text',
             class: 'form-input',
@@ -413,11 +415,9 @@ class TodoApp {
             style: 'margin-top: 5px; background-color: #6c757d;'
         }, 'Отмена');
 
-        // Заменяем контент на поля редактирования
         contentElement.innerHTML = '';
         contentElement.append(editTextInput, editDateInput, saveButton, cancelButton);
 
-        // Обработчики для кнопок
         const saveHandler = () => {
             const newText = editTextInput.value.trim();
             const newDate = editDateInput.value;
@@ -437,7 +437,6 @@ class TodoApp {
         saveButton.addEventListener('click', saveHandler);
         cancelButton.addEventListener('click', cancelHandler);
 
-        // Сохранение по Enter
         editTextInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 saveHandler();
@@ -445,18 +444,18 @@ class TodoApp {
         });
     }
 
-    // Сохранение в localStorage
+    // сохранение в localStorage
     saveTasks() {
         localStorage.setItem('todoTasks', JSON.stringify(this.tasks));
     }
 
-    // Загрузка из localStorage
+    // загрузка из localStorage
     loadTasks() {
         const saved = localStorage.getItem('todoTasks');
         return saved ? JSON.parse(saved) : [];
     }
 
-    // Вспомогательная функция для создания элементов
+    // создание элементов
     createElement(tag, attributes = {}, textContent = '') {
         const element = document.createElement(tag);
         
@@ -471,7 +470,7 @@ class TodoApp {
         return element;
     }
 
-    // Форматирование даты
+    // форматирование даты
     formatDate(dateString) {
         const date = new Date(dateString);
         return date.toLocaleDateString('ru-RU', {
@@ -482,7 +481,6 @@ class TodoApp {
     }
 }
 
-// Инициализация приложения после загрузки DOM
 document.addEventListener('DOMContentLoaded', () => {
     new TodoApp();
 });
