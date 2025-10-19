@@ -154,11 +154,26 @@ class TodoApp {
         const editButton = this.createElement('button', {
             class: 'action-button edit-button',
             title: 'Редактировать'
-        }, '✏️');
+        });
+
+        const editIcon = this.createElement('img', {
+            src: 'images/карандаш.png',
+            alt: 'Редактировать',
+            class: 'action-icon'
+        });
+        editButton.appendChild(editIcon);
+
         const deleteButton = this.createElement('button', {
             class: 'action-button delete-button',
             title: 'Удалить'
-        }, '🗑️');
+        });
+
+        const deleteIcon = this.createElement('img', {
+            src: 'images/корзина.png', 
+            alt: 'Удалить',
+            class: 'action-icon'
+        });
+        deleteButton.appendChild(deleteIcon);
 
         actions.append(editButton, deleteButton);
         taskElement.append(checkboxContainer, content, actions);
@@ -256,14 +271,18 @@ class TodoApp {
 
             const taskId = taskElement.dataset.taskId;
 
+            // Находим на какую именно кнопку кликнули (даже если по картинке)
+            const deleteButton = e.target.closest('.delete-button');
+            const editButton = e.target.closest('.edit-button');
+
             if (e.target.classList.contains('task-checkbox') || 
                 e.target.classList.contains('custom-checkbox') ||
                 e.target.classList.contains('task-checkbox-container') ||
                 e.target.classList.contains('checkmark')) {
                 this.toggleTaskCompletion(taskId);
-            } else if (e.target.classList.contains('delete-button')) {
+            } else if (deleteButton) {
                 this.deleteTask(taskId);
-            } else if (e.target.classList.contains('edit-button')) {
+            } else if (editButton) {
                 this.editTask(taskId);
             }
         });
@@ -364,11 +383,9 @@ class TodoApp {
 
     // удаление задачи
     deleteTask(taskId) {
-        if (confirm('Вы уверены, что хотите удалить эту задачу?')) {
-            this.tasks = this.tasks.filter(task => task.id !== taskId);
-            this.saveTasks();
-            this.renderTasks();
-        }
+        this.tasks = this.tasks.filter(task => task.id !== taskId);
+        this.saveTasks();
+        this.renderTasks();
     }
 
     // статус выполнения
