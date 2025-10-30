@@ -184,7 +184,10 @@ class TodoApp {
     // отображение списка задач
     renderTasks() {
         const tasksList = document.getElementById('tasksList');
-        tasksList.innerHTML = '';
+        
+        while (tasksList.firstChild) {
+            tasksList.removeChild(tasksList.firstChild);
+        }
 
         let filteredTasks = this.filterTasks(this.tasks);
         filteredTasks = this.searchTasks(filteredTasks);
@@ -192,9 +195,12 @@ class TodoApp {
 
         if (filteredTasks.length === 0) {
             const emptyMessage = this.createElement('div', { 
-                class: 'task-item',
-                style: 'text-align: center; color: #666;'
+                class: 'task-item'
             }, this.searchTerm ? 'Задачи не найдены' : 'Нет задач');
+            
+            emptyMessage.style.textAlign = 'center';
+            emptyMessage.style.color = '#666';
+            
             tasksList.append(emptyMessage);
             return;
         }
@@ -405,8 +411,10 @@ class TodoApp {
 
         const taskElement = document.querySelector(`[data-task-id="${taskId}"]`);
         const contentElement = taskElement.querySelector('.task-content');
-        const textElement = contentElement.querySelector('.task-text');
-        const dateElement = contentElement.querySelector('.task-date');
+        
+        while (contentElement.firstChild) {
+            contentElement.removeChild(contentElement.firstChild);
+        }
 
         const editTextInput = this.createElement('input', {
             type: 'text',
@@ -422,17 +430,18 @@ class TodoApp {
 
         const saveButton = this.createElement('button', {
             class: 'add-button',
-            type: 'button',
-            style: 'margin-top: 10px;'
+            type: 'button'
         }, 'Сохранить');
 
         const cancelButton = this.createElement('button', {
             class: 'add-button',
-            type: 'button',
-            style: 'margin-top: 5px; background-color: #6c757d;'
+            type: 'button'
         }, 'Отмена');
 
-        contentElement.innerHTML = '';
+        saveButton.style.marginTop = '10px';
+        cancelButton.style.marginTop = '5px';
+        cancelButton.style.backgroundColor = '#6c757d';
+
         contentElement.append(editTextInput, editDateInput, saveButton, cancelButton);
 
         const saveHandler = () => {
